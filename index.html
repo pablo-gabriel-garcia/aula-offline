@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AulaOffline</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:#1a1a2e;color:#eee;min-height:100vh}
+.header{background:#16213e;padding:20px;text-align:center;border-bottom:3px solid #0f3460}
+.header h1{font-size:2em;color:#e94560}
+.header p{color:#aaa;margin-top:5px}
+.badge{background:#27ae60;color:white;padding:3px 12px;border-radius:20px;font-size:.8em;margin-left:10px}
+.tabs{display:flex;justify-content:center;gap:10px;padding:20px;flex-wrap:wrap}
+.tab{padding:10px 25px;border-radius:25px;border:2px solid #e94560;background:transparent;color:#e94560;cursor:pointer;font-size:1em;font-weight:bold;transition:all .3s}
+.tab.active{background:#e94560;color:white}
+.container{max-width:800px;margin:0 auto;padding:20px}
+.panel{display:none}.panel.active{display:block}
+.card{background:#16213e;border-radius:15px;padding:30px;margin-bottom:20px}
+label{display:block;margin-bottom:8px;color:#e94560;font-weight:bold}
+select,textarea,input{width:100%;padding:12px;border-radius:8px;border:1px solid #0f3460;background:#0f3460;color:#eee;font-size:1em;margin-bottom:15px}
+textarea{height:100px;resize:none}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+button{width:100%;padding:15px;background:#e94560;color:white;border:none;border-radius:8px;font-size:1.1em;cursor:pointer;font-weight:bold}
+button:hover{background:#c73652}
+button:disabled{background:#555;cursor:not-allowed}
+.respuesta{background:#0f3460;border-radius:10px;padding:20px;margin-top:20px;line-height:1.8;display:none;white-space:pre-wrap}
+.loading{text-align:center;color:#e94560;display:none;margin-top:15px;font-size:1.1em}
+</style>
+</head>
+<body>
+<div class="header">
+<h1>🏫 AulaOffline <span class="badge">● Sin internet</span></h1>
+<p>Asistente educativo con IA · Para escuelas rurales de Latinoamérica</p>
+</div>
+<div class="tabs">
+<button class="tab active" onclick="showPanel('preguntas',this)">❓ Preguntas</button>
+<button class="tab" onclick="showPanel('ejercicios',this)">📝 Ejercicios</button>
+<button class="tab" onclick="showPanel('maestro',this)">👩‍🏫 Para el Maestro</button>
+</div>
+<div class="container">
+<div class="panel active" id="panel-preguntas">
+<div class="card">
+<div class="row">
+<div><label>📚 Grado</label>
+<select id="g1"><option>1er grado</option><option>2do grado</option><option>3er grado</option><option selected>4to grado</option><option>5to grado</option><option>6to grado</option><option>7mo grado</option></select></div>
+<div><label>📖 Materia</label>
+<select id="m1"><option>Ciencias Naturales</option><option>Matemáticas</option><option>Lengua</option><option>Historia</option><option>Geografía</option><option>General</option></select></div>
+</div>
+<label>❓ Pregunta del alumno</label>
+<textarea id="p1" placeholder="Ej: ¿Por qué el cielo es azul?"></textarea>
+<button onclick="preguntar()" id="btn1">✨ Obtener respuesta</button>
+<div class="loading" id="l1">⏳ Gemma 4 está pensando...</div>
+<div class="respuesta" id="r1"></div>
+</div></div>
+<div class="panel" id="panel-ejercicios">
+<div class="card">
+<div class="row">
+<div><label>📚 Grado</label>
+<select id="g2"><option>1er grado</option><option>2do grado</option><option>3er grado</option><option selected>4to grado</option><option>5to grado</option><option>6to grado</option><option>7mo grado</option></select></div>
+<div><label>📖 Materia</label>
+<select id="m2"><option>Matemáticas</option><option>Lengua</option><option>Ciencias</option><option>Historia</option><option>Geografía</option></select></div>
+</div>
+<label>🎯 Tema</label>
+<input type="text" id="t2" placeholder="Ej: Multiplicación, El agua, La célula">
+<label>🔢 Cantidad</label>
+<select id="c2"><option>3 ejercicios</option><option selected>5 ejercicios</option><option>10 ejercicios</option></select>
+<button onclick="generarEjercicios()" id="btn2">📝 Generar ejercicios</button>
+<div class="loading" id="l2">⏳ Gemma 4 está creando ejercicios...</div>
+<div class="respuesta" id="r2"></div>
+</div></div>
+<div class="panel" id="panel-maestro">
+<div class="card">
+<div class="row">
+<div><label>📚 Grado</label>
+<select id="g3"><option>1er grado</option><option>2do grado</option><option>3er grado</option><option selected>4to grado</option><option>5to grado</option><option>6to grado</option><option>7mo grado</option></select></div>
+<div><label>📖 Materia</label>
+<select id="m3"><option>Matemáticas</option><option>Ciencias</option><option>Lengua</option><option>Historia</option><option>Geografía</option></select></div>
+</div>
+<label>📋 ¿Qué necesitás?</label>
+<select id="ti3"><option>Plan de clase para 1 hora</option><option>Explicación simple del tema</option><option>Ideas de actividades creativas</option><option>Cómo explicar un concepto difícil</option></select>
+<label>📌 Tema</label>
+<input type="text" id="t3" placeholder="Ej: Fracciones, El sistema solar">
+<button onclick="ayudaMaestro()" id="btn3">👩‍🏫 Obtener ayuda</button>
+<div class="loading" id="l3">⏳ Gemma 4 está preparando...</div>
+<div class="respuesta" id="r3"></div>
+</div></div>
+</div>
+<script>
+function showPanel(name,el){
+document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+document.getElementById('panel-'+name).classList.add('active');
+el.classList.add('active');
+}
+async function api(texto,grado,btn,loading,resp){
+document.getElementById(btn).disabled=true;
+document.getElementById(loading).style.display='block';
+document.getElementById(resp).style.display='none';
+try{
+const res=await fetch('/preguntar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({texto,grado})});
+const data=await res.json();
+document.getElementById(resp).textContent=data.respuesta;
+document.getElementById(resp).style.display='block';
+}catch(e){alert('Error conectando');}
+document.getElementById(btn).disabled=false;
+document.getElementById(loading).style.display='none';
+}
+function preguntar(){
+const t=document.getElementById('p1').value.trim();
+if(!t)return alert('Escribí una pregunta');
+api('Materia:'+document.getElementById('m1').value+'. '+t,document.getElementById('g1').value,'btn1','l1','r1');
+}
+function generarEjercicios(){
+const t=document.getElementById('t2').value.trim();
+if(!t)return alert('Escribí un tema');
+api('Generá '+document.getElementById('c2').value+' de '+document.getElementById('m2').value+' sobre "'+t+'". Incluí respuestas al final.',document.getElementById('g2').value,'btn2','l2','r2');
+}
+function ayudaMaestro(){
+const t=document.getElementById('t3').value.trim();
+if(!t)return alert('Escribí un tema');
+api(document.getElementById('ti3').value+' de '+document.getElementById('m3').value+' sobre "'+t+'".',document.getElementById('g3').value,'btn3','l3','r3');
+}
+</script>
+</body></html>
